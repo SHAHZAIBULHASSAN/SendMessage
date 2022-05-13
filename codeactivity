@@ -1,0 +1,61 @@
+using System;
+using System.Activities;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Xrm.Sdk.Workflow;
+using System;
+using System.Activities;
+using System.IO;
+
+namespace TestDemo
+{
+    public class Class1:CodeActivity
+    {
+        [RequiredArgument]
+        [Input("Input Message")]
+        public InArgument<string> Message { get; set; }
+        [RequiredArgument]
+        [Input("Input To")]
+        public InArgument<string> To { get; set; }
+        [RequiredArgument]
+        [Input("Input From")]
+        public InArgument<string> From { get; set; }
+        protected override void Execute(CodeActivityContext context)
+        {
+
+            var from = this.From;
+            var to = this.To;
+            var message = this.Message;
+
+            var accountSid = "AC2b7bc2345a82bbd0902ec27812c9ae46";
+            var authToken = "fd8245801634cc5ff0bb7ff60614c1d4";
+
+            var MessageApiString = string.Format("https://api.twilio.com/2010-04-01/Accounts/{0}/SMS/Messages.json", accountSid);
+
+            var request = WebRequest.Create(MessageApiString);
+            request.Method = "POST";
+            request.Credentials = new NetworkCredential(accountSid, authToken);
+            request.ContentType = "application/x-www-form-urlencoded";
+            var From_data = from;
+            var To_data = to;
+            var Message_data = message;
+            
+            var body = "From=+19705333902&To=+923206894038&Body=test",;
+            var data = System.Text.ASCIIEncoding.Default.GetBytes(body);
+
+            using (Stream s = request.GetRequestStream())
+            {
+                s.Write(data, 0, data.Length);
+            }
+
+           
+
+
+        }
+
+    
+    }
+}
